@@ -10,6 +10,7 @@ require("dotenv").config();
 // Import routes
 const authRoutes = require("./routes/auth");
 const conversationRoutes = require("./routes/conversation");
+const messageRoutes = require("./routes/message");
 
 const cors = require("cors");
 app.use(cors());
@@ -19,6 +20,7 @@ app.use(express.json());
 // Use routes
 app.use("/api/auth", authRoutes);
 app.use("/api/conversations", conversationRoutes);
+app.use("/api/message", messageRoutes);
 
 // Handle HTTP requests
 app.get("/", (req, res) => {

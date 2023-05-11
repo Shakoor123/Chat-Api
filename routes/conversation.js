@@ -4,15 +4,13 @@ const Conversation = require("../models/Conversation");
 
 // Create new conversation
 router.post("/", async (req, res) => {
-  const { senderId, receiverId, message } = req.body;
+  const { senderId, receiverId } = req.body;
 
   try {
     let conversation = await Conversation.findOne({ senderId, receiverId });
 
     if (conversation) {
       conversation.messages.push({
-        message,
-        sentAt: Date.now(),
         sender: senderId,
         receiver: receiverId,
       });
@@ -21,14 +19,6 @@ router.post("/", async (req, res) => {
       conversation = new Conversation({
         senderId,
         receiverId,
-        messages: [
-          {
-            message,
-            sentAt: Date.now(),
-            sender: senderId,
-            receiver: receiverId,
-          },
-        ],
       });
       conversation = await conversation.save();
     }
@@ -36,7 +26,12 @@ router.post("/", async (req, res) => {
     res.json({ success: true, conversation });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Internal server error on conversation",
+      });
   }
 });
 

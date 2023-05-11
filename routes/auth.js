@@ -34,4 +34,30 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Route to follow a user
+router.post("/users/:id/follow", async (req, res) => {
+  const userId = req.params.id;
+  const followerId = req.body.followerId;
+
+  try {
+    // Update the follower's followings list
+    await User.findByIdAndUpdate(
+      followerId,
+      { $push: { followings: userId } },
+      { new: true }
+    );
+
+    // Update the user's followers list
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $push: { followers: followerId } },
+      { new: true }
+    );
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;
